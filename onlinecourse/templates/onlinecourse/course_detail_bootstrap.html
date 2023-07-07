@@ -58,42 +58,43 @@
 
 
             {% block content %}
-            <div class="container">
-                <h1>{{ course.title }}</h1>
-                <p>{{ course.description }}</p>
-                
-                {% if user.is_authenticated %}
-                <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#examCollapse" aria-expanded="false" aria-controls="examCollapse">
-                    Show Exam
-                </button>
+    <div class="container">
+        <h1>{{ course.title }}</h1>
+        <p>{{ course.description }}</p>
 
-                <div class="collapse mt-3" id="examCollapse">
-                    <form method="POST" action="{% url 'onlinecourse:index' %}">
+        {% if user.is_authenticated %}
+            <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#examCollapse" aria-expanded="false" aria-controls="examCollapse">
+                Show Exam
+            </button>
+
+            <div class="collapse mt-3" id="examCollapse">
+                <form method="POST" action="{% url 'onlinecourse:submit' course.id %}">
                     {% csrf_token %}
-                
+
                     {% for question in course.questions.all %}
                         <div class="card mt-3">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ question.question_content }}</h5>
-                            
-                            {% for choice in question.choices.all %}
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" name="selected_choices" value="{{ choice.id }}">
-                                <label class="form-check-label" for="choice{{ choice.id }}">
-                                {{ choice.choice_text }}
-                                </label>
+                            <div class="card-body">
+                                <h5 class="card-title">{{ question.question_text }}</h5>
+
+                                {% for choice in question.choices.all %}
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="selected_choices" value="{{ choice.id }}">
+                                        <label class="form-check-label" for="choice{{ choice.id }}">
+                                            {{ choice.choice_text }}
+                                        </label>
+                                    </div>
+                                {% endfor %}
                             </div>
-                            {% endfor %}
-                        </div>
                         </div>
                     {% endfor %}
-                    
+
                     <button class="btn btn-primary mt-3" type="submit">Submit Exam</button>
-                    </form>
-                </div>
-                {% endif %}
+                </form>
             </div>
-            {% endblock %}
+        {% endif %}
+    </div>
+{% endblock %}
+
 
 
             <!--Check here to see more details Bootstrap checkbox
